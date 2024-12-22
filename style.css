@@ -104,7 +104,7 @@ button:hover {
 .search-input {
     padding: 8px;
     font-size: 16px;
-    border: 2px solid var(--border-color);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     flex-grow: 1;
     margin-right: 10px;
@@ -114,4 +114,30 @@ button:hover {
     outline: none;
     border-color: #4CAF50;
     box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--textarea-bg);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+}
+
+.search-results.active {
+    display: block;
+}
+
+.search-result-item {
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.search-result-item:hover {
+    background: var(--bg-color);
 } 
