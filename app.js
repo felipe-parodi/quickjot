@@ -20,6 +20,7 @@ class NotesManager {
         
         this.initializeEventListeners();
         this.updateNotesList();
+        this.initializeKeyboardShortcuts();
     }
 
     loadNotes() {
@@ -112,8 +113,31 @@ class NotesManager {
                 note.lastModified = new Date();
                 this.saveNotes();
                 this.updateLastModified(note.lastModified);
+                this.updateWordCount();
             }
         });
+    }
+
+    initializeKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + N: New Note
+            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                e.preventDefault();
+                this.createNewNote();
+            }
+            
+            // Ctrl/Cmd + Delete: Delete Note
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Delete') {
+                e.preventDefault();
+                this.deleteCurrentNote();
+            }
+        });
+    }
+
+    updateWordCount() {
+        const words = this.noteContent.value.trim().split(/\s+/).filter(word => word.length > 0);
+        const wordCount = document.getElementById('word-count');
+        wordCount.textContent = `Words: ${words.length}`;
     }
 }
 
