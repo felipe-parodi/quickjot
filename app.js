@@ -155,7 +155,8 @@ class NotesManager {
     }
 
     initializeKeyboardShortcuts() {
-        document.addEventListener('keydown', (e) => {
+        // Use window instead of document to ensure we catch all keyboard events
+        window.addEventListener('keydown', (e) => {
             // Cmd/Ctrl + E: New Note
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'e') {
                 e.preventDefault();
@@ -172,6 +173,12 @@ class NotesManager {
             if ((e.metaKey || e.ctrlKey) && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
                 e.preventDefault();
                 this.switchNote(e.key === 'ArrowUp' ? -1 : 1);
+                // Keep the cursor position in the textarea
+                const cursorPosition = this.noteContent.selectionStart;
+                requestAnimationFrame(() => {
+                    this.noteContent.selectionStart = cursorPosition;
+                    this.noteContent.selectionEnd = cursorPosition;
+                });
             }
         });
     }
