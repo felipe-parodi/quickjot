@@ -2,7 +2,7 @@
 
 A fast, lightweight, browser-based note-taking app that persists notes locally using localStorage.
 
-[Try it out:](https://felipe-parodi.github.io/quickjot/). 
+[Try it out here.](https://felipe-parodi.github.io/quickjot/)
 
 - Create and manage multiple notes
 - Auto-saves as you type
