@@ -7,19 +7,16 @@ A fast, lightweight, browser-based note-taking app that persists notes locally u
 - Create and manage multiple notes
 - Auto-saves as you type
 - Notes persist in your browser
-- No account needed
-- No server required
+- No account or server needed
 - Keyboard shortcuts: Cmd/Ctrl + E to create note, Cmd/Ctrl + X to delete note
 - Switch between notes using Cmd/Ctrl + Up/Down arrows
-- Word count tracking
-- Dark mode support
+- Word count tracking, dark mode support
 
 ## Usage
-1. Click "New Note" to create a note
-2. Start typing
-3. Create more notes using "New Note"
-4. Switch between notes using the dropdown
-5. Search notes using the search bar
+1. Click "New Note" to create a note and start typing
+2. Create more notes using "New Note" (or CMD+E)
+3. Switch between notes using the dropdown
+4. Search notes using the search bar (IP)
 
 ## Todo
 - Fix search functionality: implement dropdown results with previews
@@ -32,7 +29,7 @@ A fast, lightweight, browser-based note-taking app that persists notes locally u
 - Add simple local backup/restore
 - Add option to customize font
 - Add option to adjust text size
-- Add simple statistics (total notes, words, etc.)
-- Add confirmation dialog for note deletion
+- Add confirmation dialog for note deletion with "Don't show again" option
+- Keep recent notes in trash for ~30 days?
 
 If you prefer a simple, blank canvas, I recommend the superior [typehere.app](https://typehere.app/).
