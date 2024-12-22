@@ -168,18 +168,32 @@ class NotesManager {
                 this.deleteCurrentNote();
             }
             
-            // Cmd/Ctrl + P: Show Command Palette
-            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'p') {
+            // Cmd/Ctrl + ArrowUp/ArrowDown: Switch between notes
+            if ((e.metaKey || e.ctrlKey) && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
                 e.preventDefault();
-                this.showCommandPalette();
-            }
-            
-            // Cmd/Ctrl + S: Export Note
-            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
-                e.preventDefault();
-                this.exportCurrentNote();
+                this.switchNote(e.key === 'ArrowUp' ? -1 : 1);
             }
         });
+    }
+
+    /**
+     * Switch to the next or previous note
+     * @param {number} direction - 1 for next, -1 for previous
+     */
+    switchNote(direction) {
+        if (this.notes.length === 0) return;
+        
+        const currentIndex = this.notes.findIndex(note => note.id === this.currentNoteId);
+        let newIndex;
+        
+        if (currentIndex === -1) {
+            newIndex = 0; // If no note is selected, select the first one
+        } else {
+            newIndex = (currentIndex + direction + this.notes.length) % this.notes.length;
+        }
+        
+        this.selectNote(this.notes[newIndex].id);
+        this.noteContent.focus(); // Keep focus on textarea after switching
     }
 
     updateWordCount() {

@@ -33,6 +33,7 @@ body {
     gap: 10px;
     background-color: var(--textarea-bg);
     border-bottom: 1px solid var(--border-color);
+    position: relative;
 }
 
 #note-selector {
@@ -119,14 +120,16 @@ button:hover {
 .search-results {
     position: absolute;
     top: 100%;
-    left: 0;
-    right: 0;
+    left: 20px;
+    right: 20px;
     background: var(--textarea-bg);
     border: 1px solid var(--border-color);
     border-top: none;
     max-height: 200px;
     overflow-y: auto;
     display: none;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .search-results.active {
