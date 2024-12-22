@@ -31,5 +31,7 @@ A fast, lightweight, browser-based note-taking app that persists notes locally u
 - Add option to adjust text size
 - Add confirmation dialog for note deletion with "Don't show again" option
 - Keep recent notes in trash for ~30 days?
+- Add ability to clear notes (from memory)
+- Explore other data/memory optimization techniques
 
 If you prefer a simple, blank canvas, I recommend the superior [typehere.app](https://typehere.app/).
