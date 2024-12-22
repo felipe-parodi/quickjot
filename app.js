@@ -62,9 +62,10 @@ class NotesManager {
         this.updateLastModified();
     }
 
-    updateNotesList() {
+    updateNotesList(filteredNotes = null) {
         this.noteSelector.innerHTML = '<option value="">Select a note...</option>';
-        this.notes.forEach(note => {
+        const notesToShow = filteredNotes || this.notes;
+        notesToShow.forEach(note => {
             const option = document.createElement('option');
             option.value = note.id;
             option.textContent = note.title;
@@ -127,25 +128,25 @@ class NotesManager {
     initializeKeyboardShortcuts() {
         document.addEventListener('keydown', (e) => {
             // Cmd/Ctrl + E: New Note
-            if ((e.metaKey || e.ctrlKey) && e.key === 'e') {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'e') {
                 e.preventDefault();
                 this.createNewNote();
             }
             
             // Cmd/Ctrl + X: Delete Note
-            if ((e.metaKey || e.ctrlKey) && e.key === 'x') {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'x') {
                 e.preventDefault();
                 this.deleteCurrentNote();
             }
             
             // Cmd/Ctrl + P: Show Command Palette
-            if ((e.metaKey || e.ctrlKey) && e.key === 'p') {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'p') {
                 e.preventDefault();
                 this.showCommandPalette();
             }
             
             // Cmd/Ctrl + S: Export Note
-            if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
                 e.preventDefault();
                 this.exportCurrentNote();
             }
@@ -159,6 +160,10 @@ class NotesManager {
     }
 
     filterNotes(query) {
+        if (!query.trim()) {
+            this.updateNotesList();
+            return;
+        }
         const filtered = this.notes.filter(note => 
             note.title.toLowerCase().includes(query.toLowerCase()) ||
             note.content.toLowerCase().includes(query.toLowerCase())
