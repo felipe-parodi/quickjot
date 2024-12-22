@@ -68,4 +68,10 @@ button:hover {
     outline: none;
     border-color: #4CAF50;
     box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+#note-content:disabled {
+    background-color: #f8f8f8;
+    color: #666;
+    cursor: not-allowed;
 } 

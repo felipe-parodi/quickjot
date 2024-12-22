@@ -46,6 +46,7 @@ class NotesManager {
         this.saveNotes();
         this.updateNotesList();
         this.selectNote(noteId);
+        this.noteContent.disabled = false;
     }
 
     deleteCurrentNote() {
@@ -77,9 +78,11 @@ class NotesManager {
         const note = this.notes.find(note => note.id === noteId);
         if (note) {
             this.noteContent.value = note.content;
+            this.noteContent.disabled = false;
             this.updateLastModified(note.lastModified);
         } else {
             this.noteContent.value = '';
+            this.noteContent.disabled = true;
             this.updateLastModified();
         }
     }
