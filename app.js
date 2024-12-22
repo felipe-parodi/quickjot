@@ -120,14 +120,14 @@ class NotesManager {
 
     initializeKeyboardShortcuts() {
         document.addEventListener('keydown', (e) => {
-            // Ctrl/Cmd + N: New Note
-            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+            // Cmd/Ctrl + E: New Note
+            if ((e.metaKey || e.ctrlKey) && e.key === 'e') {
                 e.preventDefault();
                 this.createNewNote();
             }
             
-            // Ctrl/Cmd + Delete: Delete Note
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Delete') {
+            // Cmd/Ctrl + X: Delete Note
+            if ((e.metaKey || e.ctrlKey) && e.key === 'x') {
                 e.preventDefault();
                 this.deleteCurrentNote();
             }
