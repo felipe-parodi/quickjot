@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickJot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="notes-header">
+            <select id="note-selector">
+                <option value="">Select a note...</option>
+            </select>
+            <button id="new-note">New Note</button>
+            <button id="delete-note">Delete Note</button>
+        </div>
+        <div class="note-info">
+            <span id="last-modified"></span>
+        </div>
+        <textarea id="note-content" placeholder="Start typing your note..."></textarea>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html> 
