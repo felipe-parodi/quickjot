@@ -1,3 +1,6 @@
+/**
+ * Represents a single note in the application
+ */
 class Note {
     constructor(id, title, content, lastModified = new Date()) {
         this.id = id;
@@ -7,8 +10,13 @@ class Note {
     }
 }
 
+/**
+ * Manages the note-taking application's functionality
+ * Handles note creation, deletion, persistence, and UI updates
+ */
 class NotesManager {
     constructor() {
+        // Initialize DOM elements
         this.noteContent = document.getElementById('note-content');
         this.noteSelector = document.getElementById('note-selector');
         this.searchInput = document.getElementById('search-input');
@@ -16,14 +24,20 @@ class NotesManager {
         this.deleteNoteBtn = document.getElementById('delete-note');
         this.lastModifiedSpan = document.getElementById('last-modified');
         
+        // Initialize state
         this.currentNoteId = null;
         this.notes = this.loadNotes();
         
+        // Set up event handlers
         this.initializeEventListeners();
         this.updateNotesList();
         this.initializeKeyboardShortcuts();
     }
 
+    /**
+     * Loads notes from localStorage
+     * @returns {Array} Array of Note objects
+     */
     loadNotes() {
         const savedNotes = localStorage.getItem('notes');
         if (savedNotes) {
@@ -36,10 +50,9 @@ class NotesManager {
         return [];
     }
 
-    saveNotes() {
-        localStorage.setItem('notes', JSON.stringify(this.notes));
-    }
-
+    /**
+     * Creates a new note and makes it the active note
+     */
     createNewNote() {
         const noteId = Date.now().toString();
         const noteTitle = `Note ${this.notes.length + 1}`;
@@ -51,17 +64,10 @@ class NotesManager {
         this.noteContent.disabled = false;
     }
 
-    deleteCurrentNote() {
-        if (!this.currentNoteId) return;
-        
-        this.notes = this.notes.filter(note => note.id !== this.currentNoteId);
-        this.saveNotes();
-        this.updateNotesList();
-        this.currentNoteId = null;
-        this.noteContent.value = '';
-        this.updateLastModified();
-    }
-
+    /**
+     * Updates the notes list in the UI
+     * @param {Array} filteredNotes - Optional array of filtered notes to display
+     */
     updateNotesList(filteredNotes = null) {
         this.noteSelector.innerHTML = '<option value="">Select a note...</option>';
         const notesToShow = filteredNotes || this.notes;
@@ -74,6 +80,21 @@ class NotesManager {
             }
             this.noteSelector.appendChild(option);
         });
+    }
+
+    saveNotes() {
+        localStorage.setItem('notes', JSON.stringify(this.notes));
+    }
+
+    deleteCurrentNote() {
+        if (!this.currentNoteId) return;
+        
+        this.notes = this.notes.filter(note => note.id !== this.currentNoteId);
+        this.saveNotes();
+        this.updateNotesList();
+        this.currentNoteId = null;
+        this.noteContent.value = '';
+        this.updateLastModified();
     }
 
     selectNote(noteId) {
