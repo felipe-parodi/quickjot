@@ -145,6 +145,13 @@ class NotesManager {
         this.searchInput.addEventListener('input', (e) => {
             this.filterNotes(e.target.value);
         });
+
+        // Close search results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-input') && !e.target.closest('.search-results')) {
+                this.hideSearchResults();
+            }
+        });
     }
 
     initializeKeyboardShortcuts() {
@@ -183,14 +190,52 @@ class NotesManager {
 
     filterNotes(query) {
         if (!query.trim()) {
-            this.updateNotesList();
+            this.hideSearchResults();
             return;
         }
         const filtered = this.notes.filter(note => 
             note.title.toLowerCase().includes(query.toLowerCase()) ||
             note.content.toLowerCase().includes(query.toLowerCase())
         );
-        this.updateNotesList(filtered);
+        this.showSearchResults(filtered);
+    }
+
+    showSearchResults(results) {
+        // Create or get search results container
+        let searchResults = document.querySelector('.search-results');
+        if (!searchResults) {
+            searchResults = document.createElement('div');
+            searchResults.className = 'search-results';
+            this.searchInput.parentNode.appendChild(searchResults);
+        }
+        
+        // Clear previous results
+        searchResults.innerHTML = '';
+        
+        if (results.length === 0) {
+            searchResults.innerHTML = '<div class="search-result-item">No matches found</div>';
+        } else {
+            results.forEach(note => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'search-result-item';
+                resultItem.textContent = `${note.title} - ${note.content.substring(0, 50)}...`;
+                resultItem.addEventListener('click', () => {
+                    this.selectNote(note.id);
+                    this.hideSearchResults();
+                    this.searchInput.value = '';
+                });
+                searchResults.appendChild(resultItem);
+            });
+        }
+        
+        searchResults.classList.add('active');
+    }
+
+    hideSearchResults() {
+        const searchResults = document.querySelector('.search-results');
+        if (searchResults) {
+            searchResults.classList.remove('active');
+        }
     }
 
     updateNoteTitle(note) {
