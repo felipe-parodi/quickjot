@@ -95,4 +95,12 @@ button:hover {
     background-color: #f8f8f8;
     color: #666;
     cursor: not-allowed;
+}
+
+.search-input {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    flex-grow: 1;
 } 

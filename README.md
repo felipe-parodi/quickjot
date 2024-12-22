@@ -10,11 +10,16 @@ A fast, lightweight, browser-based note-taking app that persists notes locally u
 - No account needed
 - No server required
 - Keyboard shortcuts: Cmd/Ctrl + E to create note, Cmd/Ctrl + X to delete note
+- Search across all notes instantly
+- Auto-generates titles from first line of text
+- Word count tracking
+- Dark mode support
 
 ## Usage
 1. Click "New Note" to create a note
 2. Start typing
 3. Create more notes using "New Note"
 4. Switch between notes using the dropdown
+5. Search notes using the search bar
 
 If you prefer a simple, blank canvas, I recommend the superior [typehere.app](https://typehere.app/).
