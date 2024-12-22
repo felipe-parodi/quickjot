@@ -10,6 +10,7 @@ A fast, lightweight, browser-based note-taking app that persists notes locally u
 - No account needed
 - No server required
 - Keyboard shortcuts: Cmd/Ctrl + E to create note, Cmd/Ctrl + X to delete note
+- Switch from notes using cmd + up/down arrows
 - Search across all notes instantly
 - Auto-generates titles from first line of text
 - Word count tracking
