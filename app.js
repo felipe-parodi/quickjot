@@ -62,6 +62,7 @@ class NotesManager {
         this.updateNotesList();
         this.selectNote(noteId);
         this.noteContent.disabled = false;
+        this.noteContent.focus();
     }
 
     /**
