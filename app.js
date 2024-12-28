@@ -77,8 +77,8 @@ class NotesManager {
         this.saveNotes();
         this.updateNotesList();
         this.selectNote(noteId);
-        this.noteContent.contentEditable = "true";
-        this.noteContent.innerHTML = '';
+        this.noteContent.disabled = false;
+        this.noteContent.value = '';
         this.noteContent.focus();
     }
 
@@ -112,9 +112,8 @@ class NotesManager {
         
         // Clear state first
         this.currentNoteId = null;
-        this.noteContent.innerHTML = '';
-        this.noteContent.contentEditable = "false";
-        this.noteContent.setAttribute('data-placeholder', "Please click 'New Note' to create a note, or select an existing note from the dropdown.");
+        this.noteContent.value = '';
+        this.noteContent.disabled = true;
         
         // Then update notes array
         this.notes = this.notes.filter(note => note.id !== idToDelete);
@@ -122,6 +121,7 @@ class NotesManager {
         this.updateNotesList();
         this.noteSelector.value = '';
         this.updateLastModified();
+        this.previewContent.innerHTML = '';
         
         // Clear word count
         const wordCount = document.getElementById('word-count');
@@ -132,23 +132,16 @@ class NotesManager {
         this.currentNoteId = noteId;
         const note = this.notes.find(note => note.id === noteId);
         if (note) {
-            // Split into lines and render each
-            const lines = note.content.split('\n');
-            this.noteContent.innerHTML = '';
-            lines.forEach((line, index) => {
-                const lineDiv = document.createElement('div');
-                lineDiv.className = 'note-line';
-                lineDiv.innerHTML = marked.parse(line || ' ');
-                lineDiv.contentEditable = "false";
-                lineDiv.dataset.lineIndex = String(index);
-                this.noteContent.appendChild(lineDiv);
-            });
-            this.noteContent.contentEditable = "true";
+            this.noteContent.value = note.content;
+            this.noteContent.disabled = false;
             this.updateLastModified(note.lastModified);
+            // Update preview
+            this.previewContent.innerHTML = marked.parse(note.content);
         } else {
-            this.noteContent.innerHTML = '';
-            this.noteContent.contentEditable = "false";
+            this.noteContent.value = '';
+            this.noteContent.disabled = true;
             this.updateLastModified();
+            this.previewContent.innerHTML = '';
         }
     }
 
@@ -174,48 +167,13 @@ class NotesManager {
             const note = this.notes.find(note => note.id === this.currentNoteId);
             if (note) {
                 note.content = this.noteContent.value;
-                // Update preview
-                this.previewContent.innerHTML = marked.parse(note.content);
-                
                 this.updateNoteTitle(note);
                 note.lastModified = new Date();
                 this.saveNotes();
                 this.updateLastModified(note.lastModified);
                 this.updateWordCount();
-            }
-        });
-
-        // Handle clicking on rendered lines
-        this.noteContent.addEventListener('click', (e) => {
-            const lineDiv = e.target.closest('.note-line');
-            if (lineDiv && lineDiv.contentEditable === "false") {
-                // Convert to editable plain text
-                const lineIndex = lineDiv.dataset.lineIndex;
-                const note = this.notes.find(note => note.id === this.currentNoteId);
-                if (note) {
-                    const lines = note.content.split('\n');
-                    lineDiv.textContent = lines[lineIndex];
-                    lineDiv.contentEditable = "true";
-                    lineDiv.focus();
-                }
-            }
-        });
-
-        // Show raw markdown when focused
-        this.noteContent.addEventListener('focus', () => {
-            if (!this.currentNoteId) return;
-            const note = this.notes.find(note => note.id === this.currentNoteId);
-            if (note) {
-                this.noteContent.innerText = note.content;
-            }
-        });
-
-        // Show rendered version when blurred
-        this.noteContent.addEventListener('blur', () => {
-            if (!this.currentNoteId) return;
-            const note = this.notes.find(note => note.id === this.currentNoteId);
-            if (note) {
-                this.noteContent.innerHTML = note.renderedContent;
+                // Update preview
+                this.previewContent.innerHTML = marked.parse(note.content);
             }
         });
 
