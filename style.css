@@ -76,18 +76,26 @@ button:hover {
     border-bottom: 1px solid var(--border-color);
 }
 
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    position: relative;
+}
+
 #note-content {
     width: 100%;
-    flex-grow: 1;  /* Take remaining vertical space */
+    height: 50%;
     padding: 20px;
     font-size: 16px;
-    border: none;  /* Remove borders for cleaner look */
+    border: none;
     border-radius: 0;
     box-sizing: border-box;
-    resize: none;  /* Disable resize handle */
+    resize: none;
     font-family: inherit;
     background-color: var(--textarea-bg);
     color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
 #note-content:focus {
@@ -208,12 +216,13 @@ button:hover {
 
 .markdown-content {
     width: 100%;
-    flex-grow: 1;
+    height: 50%;
     padding: 20px;
     font-size: 16px;
     background-color: var(--textarea-bg);
     color: var(--text-color);
     overflow-y: auto;
+    border-top: 1px solid var(--border-color);
 }
 
 /* Basic markdown styles */
