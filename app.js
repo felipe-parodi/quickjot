@@ -123,10 +123,14 @@ class NotesManager {
             this.noteContent.value = note.content;
             this.noteContent.disabled = false;
             this.updateLastModified(note.lastModified);
+            if (this.isPreviewMode) {
+                this.previewContent.innerHTML = marked(note.content);
+            }
         } else {
             this.noteContent.value = '';
             this.noteContent.disabled = true;
             this.updateLastModified();
+            this.previewContent.innerHTML = '';
         }
     }
 
@@ -204,7 +208,7 @@ class NotesManager {
             // Cmd/Ctrl + X: Delete Note
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'x') {
                 e.preventDefault();
-                this.deleteCurrentNote();
+                this.handleDeleteClick();
             }
             
             // Cmd/Ctrl + ArrowUp/ArrowDown: Switch between notes
@@ -349,6 +353,7 @@ class NotesManager {
     }
     
     showDeleteModal() {
+        if (!this.currentNoteId) return;  // Don't show modal if no note selected
         this.deleteModal.classList.add('active');
     }
     
@@ -357,23 +362,11 @@ class NotesManager {
         this.dontShowAgainCheckbox.checked = false;
     }
 
-    updateNoteContent(note) {
-        if (!note) return;
-        
-        // Create a div to hold the rendered content
-        const renderDiv = document.createElement('div');
-        renderDiv.className = 'markdown-content';
-        renderDiv.innerHTML = marked(note.content);
-        
-        // Replace textarea with rendered content when not focused
-        if (document.activeElement !== this.noteContent) {
-            this.noteContent.style.display = 'none';
-            renderDiv.style.display = 'block';
-        }
-    }
-
     togglePreview() {
         this.isPreviewMode = !this.isPreviewMode;
+        
+        // Toggle button active state
+        this.previewBtn.classList.toggle('active');
         
         if (this.isPreviewMode) {
             const note = this.notes.find(note => note.id === this.currentNoteId);
@@ -381,6 +374,10 @@ class NotesManager {
                 this.previewContent.innerHTML = marked(note.content);
                 this.noteContent.style.display = 'none';
                 this.previewContent.style.display = 'block';
+            } else {
+                // If no note is selected, revert preview mode
+                this.isPreviewMode = false;
+                this.previewBtn.classList.remove('active');
             }
         } else {
             this.noteContent.style.display = 'block';
