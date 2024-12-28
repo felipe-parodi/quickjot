@@ -26,6 +26,7 @@ A fast, lightweight, browser-based note-taking site that persists notes locally 
 6. Notes are automatically titled based on their first line
 
 ## Future Enhancements
+- Add dark/light mode toggle
 - Add ability to manually rename notes
 - Add export to txt/markdown
 - Add ability to reorder notes
