@@ -179,4 +179,14 @@ button:hover {
 
 .search-result-item:hover {
     background: var(--bg-color);
+}
+
+.note-line {
+    min-height: 1.5em;
+    padding: 2px 0;
+}
+
+.note-line:focus {
+    outline: none;
+    background-color: rgba(0, 0, 0, 0.05);
 } 
