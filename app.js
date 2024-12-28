@@ -52,6 +52,9 @@ class NotesManager {
         this.isPreviewVisible = true;
         this.lastWordCount = 0;
         this.lastUpdateTime = Date.now();
+        this.currentWPM = 0;
+        // Update WPM every 3 seconds
+        setInterval(() => this.updateWPM(), 3000);
     }
 
     /**
@@ -149,6 +152,7 @@ class NotesManager {
         }
         this.lastWordCount = 0;
         this.lastUpdateTime = Date.now();
+        this.currentWPM = 0;
     }
 
     updateLastModified(date = null) {
@@ -256,18 +260,31 @@ class NotesManager {
         this.noteContent.focus(); // Keep focus on textarea after switching
     }
 
-    updateWordCount() {
+    updateWPM() {
+        if (!this.currentNoteId) return;
+        
         const words = this.noteContent.value.trim().split(/\s+/).filter(word => word.length > 0);
         const currentTime = Date.now();
         const timeDiff = (currentTime - this.lastUpdateTime) / 1000 / 60; // Convert to minutes
         const wordDiff = words.length - this.lastWordCount;
-        const wpm = Math.round(wordDiff / timeDiff);
         
-        const wordCount = document.getElementById('word-count');
-        wordCount.textContent = `Words: ${words.length}${wpm > 0 ? ` | ${wpm} wpm` : ''}`;
+        if (timeDiff > 0 && wordDiff > 0) {
+            this.currentWPM = Math.round(wordDiff / timeDiff);
+        } else if (timeDiff > 0.1) { // If no new words for 6 seconds
+            this.currentWPM = 0;
+        }
         
         this.lastWordCount = words.length;
         this.lastUpdateTime = currentTime;
+        
+        this.updateWordCount();
+    }
+
+    updateWordCount() {
+        const words = this.noteContent.value.trim().split(/\s+/).filter(word => word.length > 0);
+        
+        const wordCount = document.getElementById('word-count');
+        wordCount.textContent = `Words: ${words.length}${this.currentWPM > 0 ? ` | ${this.currentWPM} wpm` : ''}`;
     }
 
     filterNotes(query) {
