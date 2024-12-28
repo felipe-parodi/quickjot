@@ -137,8 +137,11 @@ class NotesManager {
             this.noteContent.value = note.content;
             this.noteContent.disabled = false;
             this.updateLastModified(note.lastModified);
-            if (this.isPreviewMode) {
-                this.previewContent.innerHTML = marked(note.content);
+            try {
+                const renderedContent = marked.parse(note.content);
+                this.previewContent.innerHTML = renderedContent;
+            } catch (error) {
+                console.error('Markdown parsing error:', error);
             }
         } else {
             this.noteContent.value = '';
@@ -175,7 +178,6 @@ class NotesManager {
                 this.saveNotes();
                 this.updateLastModified(note.lastModified);
                 this.updateWordCount();
-                // Always update preview
                 try {
                     const renderedContent = marked.parse(note.content);
                     this.previewContent.innerHTML = renderedContent;
@@ -213,17 +215,18 @@ class NotesManager {
     }
 
     initializeKeyboardShortcuts() {
-        // Use window instead of document to ensure we catch all keyboard events
         window.addEventListener('keydown', (e) => {
             // Cmd/Ctrl + E: New Note
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'e') {
                 e.preventDefault();
+                e.stopPropagation();
                 this.createNewNote();
             }
             
             // Cmd/Ctrl + X: Delete Note
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'x') {
                 e.preventDefault();
+                e.stopPropagation();
                 this.handleDeleteClick();
             }
             
