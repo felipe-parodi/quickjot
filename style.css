@@ -13,7 +13,7 @@
         --textarea-bg: #333;
     }
 }
-
+ 
 body {
     font-family: 'Comic Sans MS', cursive, sans-serif;
     margin: 0;  /* Remove default margins */
@@ -143,4 +143,103 @@ button:hover {
 
 .search-result-item:hover {
     background: var(--bg-color);
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background-color: var(--textarea-bg);
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: var(--text-color);
+}
+
+.modal-content p {
+    color: var(--text-color);
+}
+
+.modal-actions {
+    margin-top: 20px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+#cancel-delete {
+    background-color: #666;
+}
+
+#confirm-delete {
+    background-color: #f44336;
+}
+
+.modal-actions label {
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.markdown-content {
+    width: 100%;
+    flex-grow: 1;
+    padding: 20px;
+    font-size: 16px;
+    background-color: var(--textarea-bg);
+    color: var(--text-color);
+    overflow-y: auto;
+}
+
+/* Basic markdown styles */
+.markdown-content h1 { font-size: 2em; margin-bottom: 0.5em; }
+.markdown-content h2 { font-size: 1.5em; margin-bottom: 0.5em; }
+.markdown-content p { margin-bottom: 1em; }
+.markdown-content code { 
+    background: rgba(0,0,0,0.1); 
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+.markdown-content pre code {
+    display: block;
+    padding: 1em;
+    overflow-x: auto;
+} 
+
+#toggle-preview {
+    background-color: #2196F3;  /* Different color to distinguish functionality */
+}
+
+#toggle-preview:hover {
+    background-color: #1976D2;
+}
+
+#toggle-preview.active {
+    background-color: #1976D2;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
 } 
