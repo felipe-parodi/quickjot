@@ -35,8 +35,8 @@
 ## Technical Debt
 - Search implementation needs complete overhaul
 - Code could use better organization for features
-- Some unused functions in codebase (showCommandPalette, updateStats)
-- .gitignore has duplicate entries
+- ~~Some unused functions in codebase~~ (Cleaned up unused functions)
+- ~~.gitignore has duplicate entries~~ (Cleaned up and organized)
 
 ## Future Considerations
 - Data persistence optimization
