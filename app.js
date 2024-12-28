@@ -6,6 +6,7 @@ class Note {
         this.id = id;
         this.title = title;
         this.content = content;
+        this.renderedContent = '';  // Store rendered version
         this.lastModified = lastModified;
     }
 }
@@ -131,7 +132,17 @@ class NotesManager {
         this.currentNoteId = noteId;
         const note = this.notes.find(note => note.id === noteId);
         if (note) {
-            this.noteContent.innerHTML = marked.parse(note.content);
+            // Split into lines and render each
+            const lines = note.content.split('\n');
+            this.noteContent.innerHTML = '';
+            lines.forEach((line, index) => {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'note-line';
+                lineDiv.innerHTML = marked.parse(line || ' ');
+                lineDiv.contentEditable = "false";
+                lineDiv.dataset.lineIndex = String(index);
+                this.noteContent.appendChild(lineDiv);
+            });
             this.noteContent.contentEditable = "true";
             this.updateLastModified(note.lastModified);
         } else {
@@ -162,21 +173,87 @@ class NotesManager {
             
             const note = this.notes.find(note => note.id === this.currentNoteId);
             if (note) {
-                // Store the raw text content
+                // Get current cursor position and active line
+                const selection = window.getSelection();
+                const currentLine = selection.anchorNode.parentElement;
+                
+                // Split content into lines and store raw content
                 note.content = this.noteContent.innerText;
+                const lines = note.content.split('\n');
+                
+                // Clear existing content
+                this.noteContent.innerHTML = '';
+                
+                // Render each line
+                lines.forEach((line, index) => {
+                    const lineDiv = document.createElement('div');
+                    lineDiv.className = 'note-line';
+                    
+                    if (currentLine && currentLine.dataset.lineIndex === String(index)) {
+                        // Keep current line as plain text
+                        lineDiv.textContent = line;
+                        lineDiv.contentEditable = "true";
+                    } else {
+                        // Render other lines as markdown
+                        lineDiv.innerHTML = marked.parse(line || ' ');  // Use space to preserve empty lines
+                        lineDiv.contentEditable = "false";
+                    }
+                    
+                    lineDiv.dataset.lineIndex = String(index);
+                    this.noteContent.appendChild(lineDiv);
+                });
+                
+                // Restore cursor position if possible
+                if (currentLine) {
+                    const newCurrentLine = this.noteContent.querySelector(`[data-line-index="${currentLine.dataset.lineIndex}"]`);
+                    if (newCurrentLine) {
+                        const range = document.createRange();
+                        range.selectNodeContents(newCurrentLine);
+                        range.collapse(false);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    }
+                }
+
                 this.updateNoteTitle(note);
                 note.lastModified = new Date();
                 this.saveNotes();
                 this.updateLastModified(note.lastModified);
                 this.updateWordCount();
-                // Re-render markdown
-                requestAnimationFrame(() => {
-                    this.noteContent.innerHTML = marked.parse(note.content);
-                    // Restore cursor position
-                    const selection = window.getSelection();
-                    selection.selectAllChildren(this.noteContent);
-                    selection.collapseToEnd();
-                });
+            }
+        });
+
+        // Handle clicking on rendered lines
+        this.noteContent.addEventListener('click', (e) => {
+            const lineDiv = e.target.closest('.note-line');
+            if (lineDiv && lineDiv.contentEditable === "false") {
+                // Convert to editable plain text
+                const lineIndex = lineDiv.dataset.lineIndex;
+                const note = this.notes.find(note => note.id === this.currentNoteId);
+                if (note) {
+                    const lines = note.content.split('\n');
+                    lineDiv.textContent = lines[lineIndex];
+                    lineDiv.contentEditable = "true";
+                    lineDiv.focus();
+                }
+            }
+        });
+
+        // Show raw markdown when focused
+        this.noteContent.addEventListener('focus', () => {
+            if (!this.currentNoteId) return;
+            const note = this.notes.find(note => note.id === this.currentNoteId);
+            if (note) {
+                this.noteContent.innerText = note.content;
+            }
+        });
+
+        // Show rendered version when blurred
+        this.noteContent.addEventListener('blur', () => {
+            if (!this.currentNoteId) return;
+            const note = this.notes.find(note => note.id === this.currentNoteId);
+            if (note) {
+                this.noteContent.innerHTML = note.renderedContent;
             }
         });
 

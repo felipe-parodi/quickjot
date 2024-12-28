@@ -16,14 +16,17 @@
             </select>
             <button id="new-note">New Note</button>
             <button id="delete-note">Delete Note</button>
+            <button id="toggle-mode">Preview</button>
         </div>
         <div class="note-info">
             <span id="last-modified"></span>
             <span id="word-count"></span>
         </div>
         <div class="editor-container">
-            <div id="note-content" class="editable" contenteditable="false" 
-                 data-placeholder="Please click 'New Note' to create a note, or select an existing note from the dropdown."></div>
+            <div class="split-view">
+                <div id="note-content" class="editable" contenteditable="false"></div>
+                <div id="live-preview" class="preview"></div>
+            </div>
         </div>
         <div id="delete-modal" class="modal">
             <div class="modal-content">
