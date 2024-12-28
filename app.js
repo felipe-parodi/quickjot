@@ -134,20 +134,13 @@ class NotesManager {
         this.currentNoteId = noteId;
         const note = this.notes.find(note => note.id === noteId);
         if (note) {
-            this.noteContent.value = note.content;
-            this.noteContent.disabled = false;
+            this.noteContent.innerHTML = marked.parse(note.content);
+            this.noteContent.contentEditable = "true";
             this.updateLastModified(note.lastModified);
-            try {
-                const renderedContent = marked.parse(note.content);
-                this.previewContent.innerHTML = renderedContent;
-            } catch (error) {
-                console.error('Markdown parsing error:', error);
-            }
         } else {
-            this.noteContent.value = '';
-            this.noteContent.disabled = true;
+            this.noteContent.innerHTML = '';
+            this.noteContent.contentEditable = "false";
             this.updateLastModified();
-            this.previewContent.innerHTML = '';
         }
     }
 
@@ -172,13 +165,12 @@ class NotesManager {
             
             const note = this.notes.find(note => note.id === this.currentNoteId);
             if (note) {
-                note.content = this.noteContent.value;
+                note.content = this.noteContent.innerText;
                 this.updateNoteTitle(note);
                 note.lastModified = new Date();
                 this.saveNotes();
                 this.updateLastModified(note.lastModified);
                 this.updateWordCount();
-                this.renderInlineMarkdown();
             }
         });
 
@@ -379,29 +371,6 @@ class NotesManager {
     hideDeleteModal() {
         this.deleteModal.classList.remove('active');
         this.dontShowAgainCheckbox.checked = false;
-    }
-
-    renderInlineMarkdown() {
-        const lines = this.noteContent.value.split('\n');
-        const renderedLines = lines.map(line => {
-            if (!line.trim()) return line;
-            try {
-                return marked.parse(line);
-            } catch (error) {
-                console.error('Markdown parsing error:', error);
-                return line;
-            }
-        });
-        
-        // Store cursor position
-        const cursorPos = this.noteContent.selectionStart;
-        
-        // Update content with rendered markdown
-        this.noteContent.value = renderedLines.join('\n');
-        
-        // Restore cursor position
-        this.noteContent.selectionStart = cursorPos;
-        this.noteContent.selectionEnd = cursorPos;
     }
 }
 
