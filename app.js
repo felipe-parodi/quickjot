@@ -22,13 +22,12 @@ class NotesManager {
         this.searchInput = document.getElementById('search-input');
         this.newNoteBtn = document.getElementById('new-note');
         this.deleteNoteBtn = document.getElementById('delete-note');
-        this.previewBtn = document.getElementById('toggle-preview');
+        this.previewContent = document.getElementById('preview-content');
         this.lastModifiedSpan = document.getElementById('last-modified');
         this.deleteModal = document.getElementById('delete-modal');
         this.confirmDeleteBtn = document.getElementById('confirm-delete');
         this.cancelDeleteBtn = document.getElementById('cancel-delete');
         this.dontShowAgainCheckbox = document.getElementById('dont-show-again');
-        this.previewContent = document.getElementById('preview-content');
         
         // Initialize state
         this.currentNoteId = null;
@@ -48,9 +47,6 @@ class NotesManager {
             gfm: true,        // GitHub Flavored Markdown
             sanitize: false    // Allow HTML in the input
         });
-        
-        this.isPreviewMode = false;
-        this.previewBtn.textContent = 'Preview';
     }
 
     /**
@@ -179,14 +175,12 @@ class NotesManager {
                 this.saveNotes();
                 this.updateLastModified(note.lastModified);
                 this.updateWordCount();
-                // Update preview if it's visible
-                if (this.isPreviewMode) {
-                    try {
-                        const renderedContent = marked.parse(note.content);
-                        this.previewContent.innerHTML = renderedContent;
-                    } catch (error) {
-                        console.error('Markdown parsing error:', error);
-                    }
+                // Always update preview
+                try {
+                    const renderedContent = marked.parse(note.content);
+                    this.previewContent.innerHTML = renderedContent;
+                } catch (error) {
+                    console.error('Markdown parsing error:', error);
                 }
             }
         });
@@ -216,8 +210,6 @@ class NotesManager {
             this.skipDeleteConfirmation = e.target.checked;
             localStorage.setItem('skipDeleteConfirmation', e.target.checked);
         });
-
-        this.previewBtn.addEventListener('click', () => this.togglePreview());
     }
 
     initializeKeyboardShortcuts() {
@@ -389,41 +381,6 @@ class NotesManager {
     hideDeleteModal() {
         this.deleteModal.classList.remove('active');
         this.dontShowAgainCheckbox.checked = false;
-    }
-
-    togglePreview() {
-        this.isPreviewMode = !this.isPreviewMode;
-        
-        // Toggle button active state
-        this.previewBtn.classList.toggle('active');
-        
-        if (this.isPreviewMode) {
-            const note = this.notes.find(note => note.id === this.currentNoteId);
-            if (note) {
-                try {
-                    const renderedContent = marked.parse(note.content);
-                    this.previewContent.innerHTML = renderedContent;
-                    this.noteContent.style.display = 'none';
-                    this.previewContent.style.display = 'block';
-                } catch (error) {
-                    console.error('Markdown parsing error:', error);
-                    this.isPreviewMode = false;
-                    this.previewBtn.classList.remove('active');
-                }
-            } else {
-                // If no note is selected, revert preview mode
-                this.isPreviewMode = false;
-                this.previewBtn.classList.remove('active');
-                return;
-            }
-        } else {
-            this.noteContent.style.display = 'block';
-            this.previewContent.style.display = 'none';
-            this.noteContent.focus();
-        }
-        
-        // Update preview button text
-        this.previewBtn.textContent = this.isPreviewMode ? 'Edit' : 'Preview';
     }
 }
 
