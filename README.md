@@ -9,17 +9,20 @@ A fast, lightweight, browser-based note-taking app that persists notes locally u
 - Notes persist in your browser
 - No account or server needed
 - Keyboard shortcuts: Cmd/Ctrl + E to create note, Cmd/Ctrl + X to delete note, Cmd/Ctrl + Up/Down arrows to switch notes
-- Word count tracking, dark mode support
+- Word count tracking
+- Dark mode support
+- Markdown preview
+- Note deletion confirmation with "Don't show again" option
 
 ## Usage
 1. Click "New Note" to create a note and start typing
 2. Create more notes using "New Note" (or CMD+E)
 3. Switch between notes using the dropdown
 4. Search notes using the search bar (IP)
+5. Toggle markdown preview using the Preview button
 
 ## Todo
 - Fix search functionality: implement dropdown results with previews
-- Add markdown support for basic formatting
 - Add ability to rename notes
 - Add export to txt/markdown
 - Add keyboard shortcut to focus search (Cmd/Ctrl + F?)
@@ -28,7 +31,6 @@ A fast, lightweight, browser-based note-taking app that persists notes locally u
 - Add simple local backup/restore
 - Add option to customize font
 - Add option to adjust text size
-- Add confirmation dialog for note deletion with "Don't show again" option
 - Keep recent notes in trash for ~30 days?
 - Add ability to clear notes (from memory)
 - Explore other data/memory optimization techniques
