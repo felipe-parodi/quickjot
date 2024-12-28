@@ -46,10 +46,12 @@ class NotesManager {
         marked.setOptions({
             breaks: true,  // Convert \n to <br>
             gfm: true,     // GitHub Flavored Markdown
-            sanitize: true // Sanitize HTML input
+            headerIds: false,  // Don't add IDs to headers
+            mangle: false      // Don't mangle header IDs
         });
         
         this.isPreviewMode = false;
+        this.previewBtn.textContent = 'Preview';  // Set initial button text
     }
 
     /**
@@ -113,7 +115,14 @@ class NotesManager {
         this.updateNotesList();
         this.currentNoteId = null;
         this.noteContent.value = '';
+        this.noteContent.disabled = true;
+        this.noteContent.placeholder = "Please click 'New Note' to create a note, or select an existing note from the dropdown.";
         this.updateLastModified();
+        
+        // Reset preview if active
+        if (this.isPreviewMode) {
+            this.togglePreview();
+        }
     }
 
     selectNote(noteId) {
@@ -303,7 +312,9 @@ class NotesManager {
 
     updateNoteTitle(note) {
         const firstLine = note.content.split('\n')[0].trim();
-        note.title = firstLine.substring(0, 30) || `Note ${this.notes.length}`;
+        // Remove markdown symbols from title (# ## ### * _ ` - [ ])
+        const cleanTitle = firstLine.replace(/^[#*_`\-\[\]]+\s*/, '');
+        note.title = cleanTitle.substring(0, 30) || `Note ${this.notes.length}`;
         this.updateNotesList();
     }
 
@@ -378,12 +389,16 @@ class NotesManager {
                 // If no note is selected, revert preview mode
                 this.isPreviewMode = false;
                 this.previewBtn.classList.remove('active');
+                return;  // Exit early if no note selected
             }
         } else {
             this.noteContent.style.display = 'block';
             this.previewContent.style.display = 'none';
             this.noteContent.focus();
         }
+        
+        // Update preview button text
+        this.previewBtn.textContent = this.isPreviewMode ? 'Edit' : 'Preview';
     }
 }
 

@@ -5,12 +5,18 @@
 - Local storage persistence
 - Dark mode support
 - Word count tracking
+- Note deletion confirmation with preference saving
+- Markdown preview support
 - Keyboard shortcuts:
   - Cmd/Ctrl + E: Create new note
   - Cmd/Ctrl + X: Delete note
   - Cmd/Ctrl + Up/Down: Navigate between notes
 
 ## Recent Changes
+- Added note deletion confirmation dialog with "Don't show again" option
+- Fixed markdown preview toggle functionality
+- Improved note title generation by stripping markdown symbols
+- Fixed textarea state after note deletion
 - Added keyboard shortcuts for note navigation
 - Improved textarea focus handling
 - Added dark mode support
@@ -23,7 +29,6 @@
    - Search box exists but results don't display
    - Need to implement proper dropdown results with previews
 2. Textarea focus management could be improved
-3. Note deletion has no confirmation dialog
 
 ## Next Steps (Prioritized)
 1. Fix search functionality
