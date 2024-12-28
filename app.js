@@ -44,14 +44,13 @@ class NotesManager {
         
         // Configure marked options
         marked.setOptions({
-            breaks: true,  // Convert \n to <br>
-            gfm: true,     // GitHub Flavored Markdown
-            headerIds: false,  // Don't add IDs to headers
-            mangle: false      // Don't mangle header IDs
+            breaks: true,      // Convert \n to <br>
+            gfm: true,        // GitHub Flavored Markdown
+            sanitize: false    // Allow HTML in the input
         });
         
         this.isPreviewMode = false;
-        this.previewBtn.textContent = 'Preview';  // Set initial button text
+        this.previewBtn.textContent = 'Preview';
     }
 
     /**
@@ -170,8 +169,14 @@ class NotesManager {
                 this.saveNotes();
                 this.updateLastModified(note.lastModified);
                 this.updateWordCount();
+                // Update preview if it's visible
                 if (this.isPreviewMode) {
-                    this.previewContent.innerHTML = marked(note.content);
+                    try {
+                        const renderedContent = marked.parse(note.content);
+                        this.previewContent.innerHTML = renderedContent;
+                    } catch (error) {
+                        console.error('Markdown parsing error:', error);
+                    }
                 }
             }
         });
@@ -312,8 +317,11 @@ class NotesManager {
 
     updateNoteTitle(note) {
         const firstLine = note.content.split('\n')[0].trim();
-        // Remove markdown symbols from title (# ## ### * _ ` - [ ])
-        const cleanTitle = firstLine.replace(/^[#*_`\-\[\]]+\s*/, '');
+        // Remove markdown symbols more thoroughly
+        const cleanTitle = firstLine
+            .replace(/^#+\s+/, '')  // Remove heading hashes
+            .replace(/[*_`~]|\[.*?\]|\(.*?\)/g, '')  // Remove other markdown symbols
+            .trim();
         note.title = cleanTitle.substring(0, 30) || `Note ${this.notes.length}`;
         this.updateNotesList();
     }
@@ -382,14 +390,21 @@ class NotesManager {
         if (this.isPreviewMode) {
             const note = this.notes.find(note => note.id === this.currentNoteId);
             if (note) {
-                this.previewContent.innerHTML = marked(note.content);
-                this.noteContent.style.display = 'none';
-                this.previewContent.style.display = 'block';
+                try {
+                    const renderedContent = marked.parse(note.content);
+                    this.previewContent.innerHTML = renderedContent;
+                    this.noteContent.style.display = 'none';
+                    this.previewContent.style.display = 'block';
+                } catch (error) {
+                    console.error('Markdown parsing error:', error);
+                    this.isPreviewMode = false;
+                    this.previewBtn.classList.remove('active');
+                }
             } else {
                 // If no note is selected, revert preview mode
                 this.isPreviewMode = false;
                 this.previewBtn.classList.remove('active');
-                return;  // Exit early if no note selected
+                return;
             }
         } else {
             this.noteContent.style.display = 'block';
