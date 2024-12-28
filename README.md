@@ -11,7 +11,7 @@ A fast, lightweight, browser-based note-taking app that persists notes locally u
 - Keyboard shortcuts: Cmd/Ctrl + E to create note, Cmd/Ctrl + X to delete note, Cmd/Ctrl + Up/Down arrows to switch notes
 - Word count tracking
 - Dark mode support
-- Markdown preview
+- Side-by-side markdown preview with live rendering
 - Note deletion confirmation with "Don't show again" option
 
 ## Usage
@@ -19,7 +19,7 @@ A fast, lightweight, browser-based note-taking app that persists notes locally u
 2. Create more notes using "New Note" (or CMD+E)
 3. Switch between notes using the dropdown
 4. Search notes using the search bar (IP)
-5. Toggle markdown preview using the Preview button
+5. Write markdown on the left, see rendered preview on the right
 
 ## Todo
 - Fix search functionality: implement dropdown results with previews
