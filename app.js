@@ -178,12 +178,7 @@ class NotesManager {
                 this.saveNotes();
                 this.updateLastModified(note.lastModified);
                 this.updateWordCount();
-                try {
-                    const renderedContent = marked.parse(note.content);
-                    this.previewContent.innerHTML = renderedContent;
-                } catch (error) {
-                    console.error('Markdown parsing error:', error);
-                }
+                this.renderInlineMarkdown();
             }
         });
 
@@ -384,6 +379,29 @@ class NotesManager {
     hideDeleteModal() {
         this.deleteModal.classList.remove('active');
         this.dontShowAgainCheckbox.checked = false;
+    }
+
+    renderInlineMarkdown() {
+        const lines = this.noteContent.value.split('\n');
+        const renderedLines = lines.map(line => {
+            if (!line.trim()) return line;
+            try {
+                return marked.parse(line);
+            } catch (error) {
+                console.error('Markdown parsing error:', error);
+                return line;
+            }
+        });
+        
+        // Store cursor position
+        const cursorPos = this.noteContent.selectionStart;
+        
+        // Update content with rendered markdown
+        this.noteContent.value = renderedLines.join('\n');
+        
+        // Restore cursor position
+        this.noteContent.selectionStart = cursorPos;
+        this.noteContent.selectionEnd = cursorPos;
     }
 }
 
