@@ -22,16 +22,34 @@ class NotesManager {
         this.searchInput = document.getElementById('search-input');
         this.newNoteBtn = document.getElementById('new-note');
         this.deleteNoteBtn = document.getElementById('delete-note');
+        this.previewBtn = document.getElementById('toggle-preview');
         this.lastModifiedSpan = document.getElementById('last-modified');
+        this.deleteModal = document.getElementById('delete-modal');
+        this.confirmDeleteBtn = document.getElementById('confirm-delete');
+        this.cancelDeleteBtn = document.getElementById('cancel-delete');
+        this.dontShowAgainCheckbox = document.getElementById('dont-show-again');
+        this.previewContent = document.getElementById('preview-content');
         
         // Initialize state
         this.currentNoteId = null;
         this.notes = this.loadNotes();
         
+        // Load user preference for delete confirmation
+        this.skipDeleteConfirmation = localStorage.getItem('skipDeleteConfirmation') === 'true';
+        
         // Set up event handlers
         this.initializeEventListeners();
         this.updateNotesList();
         this.initializeKeyboardShortcuts();
+        
+        // Configure marked options
+        marked.setOptions({
+            breaks: true,  // Convert \n to <br>
+            gfm: true,     // GitHub Flavored Markdown
+            sanitize: true // Sanitize HTML input
+        });
+        
+        this.isPreviewMode = false;
     }
 
     /**
@@ -122,7 +140,7 @@ class NotesManager {
 
     initializeEventListeners() {
         this.newNoteBtn.addEventListener('click', () => this.createNewNote());
-        this.deleteNoteBtn.addEventListener('click', () => this.deleteCurrentNote());
+        this.deleteNoteBtn.addEventListener('click', () => this.handleDeleteClick());
         
         this.noteSelector.addEventListener('change', (e) => {
             this.selectNote(e.target.value);
@@ -139,6 +157,9 @@ class NotesManager {
                 this.saveNotes();
                 this.updateLastModified(note.lastModified);
                 this.updateWordCount();
+                if (this.isPreviewMode) {
+                    this.previewContent.innerHTML = marked(note.content);
+                }
             }
         });
 
@@ -152,6 +173,23 @@ class NotesManager {
                 this.hideSearchResults();
             }
         });
+
+        // Add modal event listeners
+        this.confirmDeleteBtn.addEventListener('click', () => {
+            this.deleteCurrentNote();
+            this.hideDeleteModal();
+        });
+        
+        this.cancelDeleteBtn.addEventListener('click', () => {
+            this.hideDeleteModal();
+        });
+        
+        this.dontShowAgainCheckbox.addEventListener('change', (e) => {
+            this.skipDeleteConfirmation = e.target.checked;
+            localStorage.setItem('skipDeleteConfirmation', e.target.checked);
+        });
+
+        this.previewBtn.addEventListener('click', () => this.togglePreview());
     }
 
     initializeKeyboardShortcuts() {
@@ -298,6 +336,57 @@ class NotesManager {
         a.download = `${note.title}.txt`;
         a.click();
         URL.revokeObjectURL(url);
+    }
+
+    handleDeleteClick() {
+        if (!this.currentNoteId) return;
+        
+        if (this.skipDeleteConfirmation) {
+            this.deleteCurrentNote();
+        } else {
+            this.showDeleteModal();
+        }
+    }
+    
+    showDeleteModal() {
+        this.deleteModal.classList.add('active');
+    }
+    
+    hideDeleteModal() {
+        this.deleteModal.classList.remove('active');
+        this.dontShowAgainCheckbox.checked = false;
+    }
+
+    updateNoteContent(note) {
+        if (!note) return;
+        
+        // Create a div to hold the rendered content
+        const renderDiv = document.createElement('div');
+        renderDiv.className = 'markdown-content';
+        renderDiv.innerHTML = marked(note.content);
+        
+        // Replace textarea with rendered content when not focused
+        if (document.activeElement !== this.noteContent) {
+            this.noteContent.style.display = 'none';
+            renderDiv.style.display = 'block';
+        }
+    }
+
+    togglePreview() {
+        this.isPreviewMode = !this.isPreviewMode;
+        
+        if (this.isPreviewMode) {
+            const note = this.notes.find(note => note.id === this.currentNoteId);
+            if (note) {
+                this.previewContent.innerHTML = marked(note.content);
+                this.noteContent.style.display = 'none';
+                this.previewContent.style.display = 'block';
+            }
+        } else {
+            this.noteContent.style.display = 'block';
+            this.previewContent.style.display = 'none';
+            this.noteContent.focus();
+        }
     }
 }
 

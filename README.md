@@ -8,8 +8,7 @@ A fast, lightweight, browser-based note-taking app that persists notes locally u
 - Auto-saves as you type
 - Notes persist in your browser
 - No account or server needed
-- Keyboard shortcuts: Cmd/Ctrl + E to create note, Cmd/Ctrl + X to delete note
-- Switch between notes using Cmd/Ctrl + Up/Down arrows
+- Keyboard shortcuts: Cmd/Ctrl + E to create note, Cmd/Ctrl + X to delete note, Cmd/Ctrl + Up/Down arrows to switch notes
 - Word count tracking, dark mode support
 
 ## Usage
