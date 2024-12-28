@@ -173,48 +173,10 @@ class NotesManager {
             
             const note = this.notes.find(note => note.id === this.currentNoteId);
             if (note) {
-                // Get current cursor position and active line
-                const selection = window.getSelection();
-                const currentLine = selection.anchorNode.parentElement;
+                note.content = this.noteContent.value;
+                // Update preview
+                this.previewContent.innerHTML = marked.parse(note.content);
                 
-                // Split content into lines and store raw content
-                note.content = this.noteContent.innerText;
-                const lines = note.content.split('\n');
-                
-                // Clear existing content
-                this.noteContent.innerHTML = '';
-                
-                // Render each line
-                lines.forEach((line, index) => {
-                    const lineDiv = document.createElement('div');
-                    lineDiv.className = 'note-line';
-                    
-                    if (currentLine && currentLine.dataset.lineIndex === String(index)) {
-                        // Keep current line as plain text
-                        lineDiv.textContent = line;
-                        lineDiv.contentEditable = "true";
-                    } else {
-                        // Render other lines as markdown
-                        lineDiv.innerHTML = marked.parse(line || ' ');  // Use space to preserve empty lines
-                        lineDiv.contentEditable = "false";
-                    }
-                    
-                    lineDiv.dataset.lineIndex = String(index);
-                    this.noteContent.appendChild(lineDiv);
-                });
-                
-                // Restore cursor position if possible
-                if (currentLine) {
-                    const newCurrentLine = this.noteContent.querySelector(`[data-line-index="${currentLine.dataset.lineIndex}"]`);
-                    if (newCurrentLine) {
-                        const range = document.createRange();
-                        range.selectNodeContents(newCurrentLine);
-                        range.collapse(false);
-                        selection.removeAllRanges();
-                        selection.addRange(range);
-                    }
-                }
-
                 this.updateNoteTitle(note);
                 note.lastModified = new Date();
                 this.saveNotes();
