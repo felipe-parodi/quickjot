@@ -92,20 +92,26 @@ button:hover {
     font-size: 16px;
     border: none;
     box-sizing: border-box;
-    resize: none;
     font-family: inherit;
     background-color: var(--textarea-bg);
     color: var(--text-color);
+    white-space: pre-wrap;
+    overflow-y: auto;
+}
+
+#note-content[contenteditable="false"] {
+    background-color: var(--bg-color);
+    color: #666;
+    cursor: not-allowed;
+}
+
+#note-content:empty:before {
+    content: attr(data-placeholder);
+    color: #666;
 }
 
 #note-content:focus {
     outline: none;
-}
-
-#note-content:disabled {
-    background-color: var(--bg-color);
-    color: #666;
-    cursor: not-allowed;
 }
 
 /* Inline markdown styles */
