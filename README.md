@@ -38,3 +38,5 @@ A fast, lightweight, browser-based note-taking site that persists notes locally 
 - Memory usage optimization
 
 If you prefer a simple, blank canvas, I recommend the superior [typehere.app](https://typehere.app/).
+
+This is different from quickjot.app, which seems to be a site for logging daily memories (cute but unrelated).
