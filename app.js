@@ -116,12 +116,22 @@ class NotesManager {
         this.noteContent.value = '';
         this.noteContent.disabled = true;
         this.noteContent.placeholder = "Please click 'New Note' to create a note, or select an existing note from the dropdown.";
+        this.noteSelector.value = '';
         this.updateLastModified();
         
         // Reset preview if active
         if (this.isPreviewMode) {
-            this.togglePreview();
+            this.isPreviewMode = false;
+            this.previewBtn.classList.remove('active');
+            this.previewBtn.textContent = 'Preview';
+            this.noteContent.style.display = 'block';
+            this.previewContent.style.display = 'none';
+            this.previewContent.innerHTML = '';
         }
+        
+        // Clear word count
+        const wordCount = document.getElementById('word-count');
+        wordCount.textContent = 'Words: 0';
     }
 
     selectNote(noteId) {
