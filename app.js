@@ -76,7 +76,8 @@ class NotesManager {
         this.saveNotes();
         this.updateNotesList();
         this.selectNote(noteId);
-        this.noteContent.disabled = false;
+        this.noteContent.contentEditable = "true";
+        this.noteContent.innerHTML = '';
         this.noteContent.focus();
     }
 
@@ -105,25 +106,21 @@ class NotesManager {
     deleteCurrentNote() {
         if (!this.currentNoteId) return;
         
-        this.notes = this.notes.filter(note => note.id !== this.currentNoteId);
+        // Store ID before clearing state
+        const idToDelete = this.currentNoteId;
+        
+        // Clear state first
+        this.currentNoteId = null;
+        this.noteContent.innerHTML = '';
+        this.noteContent.contentEditable = "false";
+        this.noteContent.setAttribute('data-placeholder', "Please click 'New Note' to create a note, or select an existing note from the dropdown.");
+        
+        // Then update notes array
+        this.notes = this.notes.filter(note => note.id !== idToDelete);
         this.saveNotes();
         this.updateNotesList();
-        this.currentNoteId = null;
-        this.noteContent.value = '';
-        this.noteContent.disabled = true;
-        this.noteContent.placeholder = "Please click 'New Note' to create a note, or select an existing note from the dropdown.";
         this.noteSelector.value = '';
         this.updateLastModified();
-        
-        // Reset preview if active
-        if (this.isPreviewMode) {
-            this.isPreviewMode = false;
-            this.previewBtn.classList.remove('active');
-            this.previewBtn.textContent = 'Preview';
-            this.noteContent.style.display = 'block';
-            this.previewContent.style.display = 'none';
-            this.previewContent.innerHTML = '';
-        }
         
         // Clear word count
         const wordCount = document.getElementById('word-count');
@@ -165,12 +162,21 @@ class NotesManager {
             
             const note = this.notes.find(note => note.id === this.currentNoteId);
             if (note) {
+                // Store the raw text content
                 note.content = this.noteContent.innerText;
                 this.updateNoteTitle(note);
                 note.lastModified = new Date();
                 this.saveNotes();
                 this.updateLastModified(note.lastModified);
                 this.updateWordCount();
+                // Re-render markdown
+                requestAnimationFrame(() => {
+                    this.noteContent.innerHTML = marked.parse(note.content);
+                    // Restore cursor position
+                    const selection = window.getSelection();
+                    selection.selectAllChildren(this.noteContent);
+                    selection.collapseToEnd();
+                });
             }
         });
 
@@ -357,7 +363,9 @@ class NotesManager {
         if (!this.currentNoteId) return;
         
         if (this.skipDeleteConfirmation) {
-            this.deleteCurrentNote();
+            requestAnimationFrame(() => {
+                this.deleteCurrentNote();
+            });
         } else {
             this.showDeleteModal();
         }
