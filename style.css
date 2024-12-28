@@ -1,52 +1,131 @@
 :root {
-    --bg-color: #f8f9fa;
-    --text-color: #2d3436;
-    --border-color: #e9ecef;
-    --textarea-bg: #ffffff;
-    --accent-color: #00b894;
-    --danger-color: #d63031;
+    --bg-color: #f5f5f5;
+    --text-color: #333;
+    --border-color: #ccc;
+    --textarea-bg: #fff;
 }
 
-/* Custom styles for our specific needs */
-.editor-container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    height: calc(100vh - 100px);
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #222;
+        --text-color: #eee;
+        --border-color: #444;
+        --textarea-bg: #333;
+    }
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
 }
 
 .container {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    max-width: none;
-    padding: 0;
-    margin: 0;
 }
 
 .notes-header {
+    padding: 15px 20px;
     display: flex;
     gap: 10px;
-    padding: 1rem;
-    background: var(--bg-color);
+    background-color: var(--textarea-bg);
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+}
+
+#note-selector {
+    flex-grow: 1;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+button {
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#delete-note {
+    background-color: #f44336;
+}
+
+#delete-note:hover {
+    background-color: #da190b;
 }
 
 .note-info {
-    padding: 0.5rem 1rem;
-    color: var(--text-color);
-    opacity: 0.7;
+    padding: 5px 20px;
+    color: #666;
+    font-size: 14px;
     display: flex;
     justify-content: space-between;
+    background-color: var(--textarea-bg);
+    border-bottom: 1px solid var(--border-color);
 }
 
-#note-content, #preview-content {
-    flex: 1;
-    border: none;
-    border-radius: 0;
-    margin: 0;
-    padding: 1rem;
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+#note-content {
     width: 100%;
+    flex: 1;
+    padding: 20px;
+    font-size: 16px;
+    border: none;
     box-sizing: border-box;
+    resize: none;
+    font-family: inherit;
+    background-color: var(--textarea-bg);
+    color: var(--text-color);
+}
+
+#note-content:focus {
+    outline: none;
+}
+
+#note-content:disabled {
+    background-color: var(--bg-color);
+    color: #666;
+    cursor: not-allowed;
+}
+
+#preview-content {
+    flex: 1;
+    padding: 20px;
+    background-color: var(--textarea-bg);
+    border-top: 1px solid var(--border-color);
+    overflow-y: auto;
+}
+
+/* Markdown preview styles */
+#preview-content h1 { font-size: 2em; margin-bottom: 0.5em; }
+#preview-content h2 { font-size: 1.5em; margin-bottom: 0.5em; }
+#preview-content p { margin-bottom: 1em; }
+#preview-content code {
+    background: rgba(0,0,0,0.1);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+#preview-content pre code {
+    display: block;
+    padding: 1em;
+    overflow-x: auto;
 }
 
 /* Modal styles */
@@ -64,8 +143,8 @@
 }
 
 .modal-content {
-    background: var(--bg-color);
-    padding: 1.5rem;
+    background: var(--textarea-bg);
+    padding: 20px;
     border-radius: 4px;
     max-width: 400px;
     width: 90%;
@@ -75,9 +154,9 @@
 .search-results {
     position: absolute;
     top: 100%;
-    left: 1rem;
-    right: 1rem;
-    background: var(--bg-color);
+    left: 20px;
+    right: 20px;
+    background: var(--textarea-bg);
     border: 1px solid var(--border-color);
     border-radius: 4px;
     max-height: 200px;
@@ -90,23 +169,11 @@
     display: block;
 }
 
-#preview-content {
-    background-color: var(--bg-color);
-    overflow-y: auto;
-    border-top: 1px solid var(--border-color);
+.search-result-item {
+    padding: 8px 16px;
+    cursor: pointer;
 }
 
-/* Markdown preview styles */
-#preview-content h1 { font-size: 2em; margin-bottom: 0.5em; }
-#preview-content h2 { font-size: 1.5em; margin-bottom: 0.5em; }
-#preview-content p { margin-bottom: 1em; }
-#preview-content code {
-    background: rgba(0,0,0,0.1);
-    padding: 0.2em 0.4em;
-    border-radius: 3px;
-}
-#preview-content pre code {
-    display: block;
-    padding: 1em;
-    overflow-x: auto;
+.search-result-item:hover {
+    background: var(--bg-color);
 } 
