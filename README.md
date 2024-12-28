@@ -39,4 +39,4 @@ A fast, lightweight, browser-based note-taking site that persists notes locally 
 
 If you prefer a simple, blank canvas, I recommend the superior [typehere.app](https://typehere.app/).
 
-This is different from [quickjot.app](quickjot.app), which seems to be a site for logging daily memories (cute but unrelated).
+This is different from [quickjot.app](https://quickjot.app/), which seems to be a site for logging daily memories (cute but unrelated).
