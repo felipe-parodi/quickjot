@@ -20,9 +20,9 @@ class NotesManager {
         // Initialize DOM elements
         this.noteContent = document.getElementById('note-content');
         this.noteSelector = document.getElementById('note-selector');
-        this.searchInput = document.getElementById('search-input');
         this.newNoteBtn = document.getElementById('new-note');
         this.deleteNoteBtn = document.getElementById('delete-note');
+        this.toggleModeBtn = document.getElementById('toggle-mode');
         this.previewContent = document.getElementById('preview-content');
         this.lastModifiedSpan = document.getElementById('last-modified');
         this.deleteModal = document.getElementById('delete-modal');
@@ -48,6 +48,10 @@ class NotesManager {
             gfm: true,        // GitHub Flavored Markdown
             sanitize: false    // Allow HTML in the input
         });
+
+        this.isPreviewVisible = true;
+        this.lastWordCount = 0;
+        this.lastUpdateTime = Date.now();
     }
 
     /**
@@ -143,6 +147,8 @@ class NotesManager {
             this.updateLastModified();
             this.previewContent.innerHTML = '';
         }
+        this.lastWordCount = 0;
+        this.lastUpdateTime = Date.now();
     }
 
     updateLastModified(date = null) {
@@ -177,15 +183,11 @@ class NotesManager {
             }
         });
 
-        this.searchInput.addEventListener('input', (e) => {
-            this.filterNotes(e.target.value);
-        });
-
-        // Close search results when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-input') && !e.target.closest('.search-results')) {
-                this.hideSearchResults();
-            }
+        this.toggleModeBtn.addEventListener('click', () => {
+            this.isPreviewVisible = !this.isPreviewVisible;
+            this.previewContent.style.display = this.isPreviewVisible ? 'block' : 'none';
+            this.noteContent.style.width = this.isPreviewVisible ? '50%' : '100%';
+            this.toggleModeBtn.textContent = this.isPreviewVisible ? 'Hide Preview' : 'Show Preview';
         });
 
         // Add modal event listeners
@@ -256,8 +258,16 @@ class NotesManager {
 
     updateWordCount() {
         const words = this.noteContent.value.trim().split(/\s+/).filter(word => word.length > 0);
+        const currentTime = Date.now();
+        const timeDiff = (currentTime - this.lastUpdateTime) / 1000 / 60; // Convert to minutes
+        const wordDiff = words.length - this.lastWordCount;
+        const wpm = Math.round(wordDiff / timeDiff);
+        
         const wordCount = document.getElementById('word-count');
-        wordCount.textContent = `Words: ${words.length}`;
+        wordCount.textContent = `Words: ${words.length}${wpm > 0 ? ` | ${wpm} wpm` : ''}`;
+        
+        this.lastWordCount = words.length;
+        this.lastUpdateTime = currentTime;
     }
 
     filterNotes(query) {
